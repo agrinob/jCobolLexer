@@ -1,0 +1,21 @@
+	jCobolLexer
+
+A Cobol 85 Lexer written in Java.
+
+Features:
+
+1. Parse free, fixed and mixed sources.
+2. Process continuation lines producing a single item (string, word, etc)
+   as ouput.
+3. Classify each token by semantic use (comment, separator, word, etc).
+
+Documentation:
+
+1. See javadoc documentation for general use.
+2. See/use jUnit cases for testing.
+
+Andres Grino B
+agrinob@hotmail.com
+
+Pichilemu, VI Region, Chile
+

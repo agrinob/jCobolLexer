@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    The Cobol Lexer main classes.
+    <p>Provides the API for parsing a Cobol source program and convert it to a
+    list of lexical tokens.
+    <h1>Example</h1>
+    <p>You want to convert a cobol source program "test.cbl" and obtains it as
+    a list of lexical tokens:
+    <pre><code>
+        FileReader reader = new FileReader("test.cbl");
+        CobolLexer lexer = new CobolLexer(reader);
+        TokenList tokens = lexer.getTokens();
+    </code></pre>
+    <p>And that's all.
+    <h1>What are lexical tokens?</h1>
+    <p>A lexical token is an indivisible element of cobol source program. 
+        <code><a href="../../jcobol/lexer/TokenList.html">TokenList</a></code>
+        contains one 
+        <code><a href="../../jcobol/lexer/CobolToken.html">CobolToken</a></code> for each lexical token.
+    <p><code>CobolToken</code> give you the following information about each token:
+    <ul>
+        <li>Position (row, col) in the cobol source file.</li>
+        <li>The value, i.e. the text that made the token.</li>
+        <li>The type of the token (string, separator, word, ...).</li>
+    </ul>
+    <p>Each lexical token is given a type (see
+        <code><a href="../../jcobol/lexer/CobolType.html">CobolType</a></code>
+        ).
+    <p>No tokens contains text that spans more than one line. Single logical items,
+        like multi-line strings or pseudo-text, are represented by several
+        tokens.
+    <p>Parsing only applies to proper cobol code. Compiler options and contents
+        of pseudo-code is not parsed, only stored as found.
+    <h1>What results means</h1>
+    <p>TokenList contains a list of lexical tokens, a combination of the following
+        types:
+    <table rules="all" border="1" cellpadding="3" width="100%">
+        <thead>
+            <tr  bgcolor="#ccccff">
+                <th>Type</th>
+                <th>Value</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody style="font-family: serif; font-weight: normal" align="left">
+        <tr>
+            <th><code>STRING</code></th>
+            <th style="font-weight: normal">A string</th>
+            <th style="font-weight: normal">Include the start quotation mark. The end quotation mark may appears or not. </th>
+        </tr>
+        <tr>
+            <th><code>WORD</code></th>
+            <th style="font-weight: normal">A cobol word</th>
+            <th style="font-weight: normal">Variable names, reserved words, numeric values, ...</th>
+        </tr>
+        <tr>
+            <th><code>TEXT</code></th>
+            <th style="font-weight: normal">Unparsed text</th>
+            <th style="font-weight: normal">Used to store comments, compiler options and other information that is not
+        the code itself.</th>
+        </tr>
+        <tr>
+            <th><code>SEPARATOR</code></th>
+            <th style="font-weight: normal">A comma, period or semi-colon</th>
+            <th style="font-weight: normal">These caracter when used as separators in code, not as part of a PICTURE specification.</th>
+        </tr>
+        <tr>
+            <th><code>COLON</code></th>
+            <th style="font-weight: normal">A colon</th>
+            <th style="font-weight: normal">Used for substrings, like TITLE(START:LEN).</th>
+        </tr>
+        <tr>
+            <th><code>LEFT_PAREN, RIGHT_PAREN</code></th>
+            <th style="font-weight: normal">"(", ")"</th>
+            <th style="font-weight: normal">Left and right parentesis.</th>
+        </tr>
+        <tr>
+            <th><code>START_PSEUDO_TEXT</code></th>
+            <th style="font-weight: normal">"=="</th>
+            <th style="font-weight: normal">Signal start of pseudo-text.</th>
+        </tr>
+        <tr>
+            <th><code>PSEUDO_TEXT</code></th>
+            <th style="font-weight: normal">A free text</th>
+            <th style="font-weight: normal">The pseudo-text itself, minus initial/final "==".</th>
+        </tr>
+        <tr>
+            <th><code>END_PSEUDO_TEXT</code></th>
+            <th style="font-weight: normal">"=="</th>
+            <th style="font-weight: normal">Signal the end of pseudo-text</th>
+        </tr>
+        <tr>
+            <th><code>CONTINUATION</code></th>
+            <th style="font-weight: normal">"-"</th>
+            <th style="font-weight: normal">A continuation mark in col 7. Only appears in fixed format cobol programs.</th>
+        </tr>
+        <tr>
+            <th><code>NEW_PAGE</code></th>
+            <th style="font-weight: normal">"/"</th>
+            <th style="font-weight: normal">A new page jump. The text comes unparsed in the next token (of type <code>TEXT</code>).</th>
+        </tr>
+        <tr>
+            <th><code>SPECIAL_LINE</code></th>
+            <th style="font-weight: normal">"$"</th>
+            <th style="font-weight: normal">A compiler option.  The text comes unparsed in the next token (of type <code>TEXT</code>).</th>
+        </tr>
+        <tr>
+            <th><code>START_DEBUG</code></th>
+            <th style="font-weight: normal">Single letter</th>
+            <th style="font-weight: normal">The next tokens, until <code>END_DEBUG</code> are marked for conditional compilation.
+            The letter is usually "D" or "d", but others alternativas are also accepted.</th>
+        </tr>
+        <tr>
+            <th><code>END_DEBUG</code></th>
+            <th style="font-weight: normal">Empty string</th>
+            <th style="font-weight: normal">Mark the end of the debug line.</th>
+        </tr>
+        <tr>
+            <th><code>AREA_A</code></th>
+            <th style="font-weight: normal">"" (empty string)</th>
+            <th style="font-weight: normal">Next token starts in Area A (cols 8-11). Only appears in fixed format cobol programs.</th>
+        </tr>
+        </tbody>
+    </table>
+  </body>
+</html>
