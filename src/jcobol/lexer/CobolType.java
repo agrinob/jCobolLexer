@@ -31,10 +31,6 @@ public enum CobolType {
     COMMENT,
     /** Special line (a '$' in col 7) */
     SPECIAL_LINE,
-//    /** Next tokens are in a debug line (a 'D' or 'd' in col 7)*/
-//    START_DEBUG,
-//    /** End of a debug line. */
-//    END_DEBUG,
     /** String */
     STRING,
     /** Start of pseudo-text. Read next tokens for recovering text. */

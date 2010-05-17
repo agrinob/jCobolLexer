@@ -45,7 +45,7 @@ public class CardReader {
     }
 
     /**
-     * Read the next line from cobol source program.
+     * Read the next physical line from cobol source program.
      * @return a CobolLine instance or null if the end of the stream
      * has been reached.
      * @throws IOException If an I/O error occurs.

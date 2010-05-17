@@ -23,6 +23,9 @@ package jcobol.lexer;
  * <p>A CobolToken keep the source text and row/col where it begin. You can
  * reconstruct the original source code from their CobolToken representation.
  *
+ * <p>Note: for multiline strings (joined by continuation character), we register
+ * only the line and column of the string's segment.
+ *
  * @author Andr&eacute;s Gri&ntilde;&oacute; Brandt <agrinob@hotmail.com>
  */
 public class CobolToken {

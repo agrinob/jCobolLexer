@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
+ * Processes a physical cobol line and interpreted it as fixed or free format.
  * @author Andr&eacute;s Gri&ntilde;&oacute; Brandt <agrinob@hotmail.com>
  */
 public class CobolLineFactory {
@@ -18,6 +18,12 @@ public class CobolLineFactory {
     /** Format in use (free/fixed) */
     private boolean fixedFormat = true;
 
+    /**
+     * Take a physical source line and produce an appropiated CobolLine.
+     * @param sourceLine The physical source cobol line.
+     * @param lineNumber The line number in source code (1..n).
+     * @return A CobolLine of the appropiate type.
+     */
     public CobolLine getCobolLine(final String sourceLine, final int lineNumber) {
         final Matcher m         = sourceFormat.matcher(sourceLine);
         final boolean fixedLine = (m.matches() && sourceLine.startsWith("$")) ? false : fixedFormat;

@@ -1,6 +1,6 @@
-	jCobolLexer
+jCobolLexer - A Cobol 85 X3.23-1985 lexer written in Java.
 
-A Cobol 85 Lexer written in Java.
+This directory contains source code, javadoc and final .jar of jCobolLexer.
 
 Features:
 
@@ -8,14 +8,33 @@ Features:
 2. Process continuation lines producing a single item (string, word, etc)
    as ouput.
 3. Classify each token by semantic use (comment, separator, word, etc).
+4. Select/Omit debug lines according run-time parameters.
+
+Status:     Stable.
+
+Pending:    Process COPY/REPLACE statements.
 
 Documentation:
 
 1. See javadoc documentation for general use.
 2. See/use jUnit cases for testing.
+3. Email me.
+
+Libraries you will need:
+
+1. Common-logging.
+2. Log4j.
+
+License:
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
 
 Andres Grino B
 agrinob@hotmail.com
 
 Pichilemu, VI Region, Chile
-
+May/2010

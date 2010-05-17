@@ -45,9 +45,9 @@ public class TokenList {
     }
 
     /**
-     * Append a token to the list.
+     * Append a token to the end of the list.
      * @param token Token to be added, not null.
-     * @throws IllegalArgumentException Index out of range.
+     * @throws IllegalArgumentException If argument is null.
      */
     public void add(final CobolToken token) throws IllegalArgumentException {
         if (token == null) {
@@ -125,7 +125,7 @@ public class TokenList {
     /**
      * Select tokens.
      * @param filter Filters to be applied to the actual list.
-     * @return A new list with the seleceted tokesn.
+     * @return A new list with the selected tokens.
      */
     public TokenList get(final TokenFilter... filter) {
         TokenList newList = new TokenList();
@@ -190,97 +190,9 @@ public class TokenList {
     }
 
     /**
-     * Scan tokens and join those that are contiguous.
-     * <p>A PICTURE string like 9(6).99 is stored as five tokens ("9", "(", "6",
-     * ")", ".99"), but sometimes you need just the original string ("9(6).99").
-     * Use this method to recover that complete string.
-     * <p>Contiguous tokens are tokens not separated by whitespaces, period,
-     * comma or semi-colon.
-     * @param index The index for start token.
-     * @return The resulting string.
-     * @throws IllegalArgumentException Index out of range.
-     */
-    public String joinContiguousText(final int index) throws IllegalArgumentException {
-        if (index < 0 || index >= tokens.size()) {
-            throw new IllegalArgumentException("Index out of range");
-        }
-
-        final StringBuffer buffer = new StringBuffer(80);
-        int pos = index;
-        CobolToken token = tokens.get(pos);
-        final int row = token.getRow();
-        final int col = token.getCol();
-        do {
-            buffer.append(token.getText());
-            pos++;
-            token = (pos < tokens.size()) ? tokens.get(pos) : null;
-        } while (token != null
-                && token.getType() != CobolType.SEPARATOR
-                && token.getRow() == row
-                && token.getCol() == col + buffer.length());
-
-        return buffer.toString();
-    }
-
-    /**
-     * Reconstruct original cobol program from tokens.
-     * <p>This is an aid for checking correcteness.
-     * <p>Lines are numbered in step of 100, and identification area is left
-     * blank. Blank lines are included in the return value.
-     * @return A list of source code lines.
-     */
-    public List<String> reconstructProgram() {
-        final List<String> pgma = new ArrayList<String>(this.tokens.size() / 5);
-        int lineNumber = 1;
-        int i = 0;
-        while (i < tokens.size()) {
-            final StringBuffer buffer = new StringBuffer(80);
-            buffer.append(String.format("%06d", lineNumber * 100));
-
-            CobolToken token = tokens.get(i);
-            int row = token.getRow();
-            /*
-             * Generate blank lines.
-             */
-            while (lineNumber < row) {
-                pgma.add(buffer.toString());
-                buffer.setLength(0);
-                lineNumber++;
-                buffer.append(String.format("%06d", lineNumber * 100));
-            }
-
-            /*
-             * Join tokens to form a line.
-             */
-            while (i < tokens.size() && row == token.getRow()) {
-                int col = token.getCol();
-                /*
-                 * Insert space to reach token start position.
-                 */
-                while (buffer.length() < col - 1) {
-                    buffer.append(' ');
-                }
-                buffer.append(token.getText());
-
-                /*
-                 * Next token.
-                 */
-                i++;
-                if (i < tokens.size()) {
-                    token = tokens.get(i);
-                }
-            }
-            /*
-             * Line is completed.
-             */
-            pgma.add(buffer.toString());
-            lineNumber++;
-        }
-        return pgma;
-    }
-
-    /**
-     * Search backward for a token that's not a comment, compiler directive or empty line.
+     * Search backward for a token that's not a comment, compiler directive, text or empty line.
+     * <p>The following {@link CobolType} are excluded from the search: <code>
+     * COMMENT, NEW_PAGE, SPECIAL_LINE</code> and <code>TEXT</code>.
      * @param pos Token position counting from the list's end:
      * 0 = last non-comment token; 1 = next to last non-comment token.
      * @return The found token or null.

@@ -99,40 +99,6 @@ public class TokenListTest {
     }
 
     @Test
-    public void testJoinPicture() {
-        System.out.println("Join tokens for PICTURE 9(5)V99.");
-
-        TokenList instance = new TokenList();
-        instance.add(new CobolToken(1, 1, "9"));
-        instance.add(new CobolToken(1, 2, "(", CobolType.LEFT_PAREN));
-        instance.add(new CobolToken(1, 3, "5"));
-        instance.add(new CobolToken(1, 4, ")", CobolType.RIGHT_PAREN));
-        instance.add(new CobolToken(1, 5, "V99"));
-        instance.add(new CobolToken(1, 8, ".", CobolType.SEPARATOR));
-
-        String result = instance.joinContiguousText(0);
-        String expected = "9(5)V99";
-        assertEquals(expected, result);
-    }
-
-    @Test
-    public void testJoinSeparator() {
-        System.out.println("Join separtor tokens in PICTURE 9(5)V99.");
-
-        TokenList instance = new TokenList();
-        instance.add(new CobolToken(1, 1, "9"));
-        instance.add(new CobolToken(1, 2, "(", CobolType.LEFT_PAREN));
-        instance.add(new CobolToken(1, 3, "5"));
-        instance.add(new CobolToken(1, 4, ")", CobolType.RIGHT_PAREN));
-        instance.add(new CobolToken(1, 5, "V99"));
-        instance.add(new CobolToken(1, 8, ".", CobolType.SEPARATOR));
-
-        String result = instance.joinContiguousText(5);
-        String expected = ".";
-        assertEquals(expected, result);
-    }
-
-    @Test
     public void testGetFromContinuation() {
         System.out.println("Special continuation for strings");
         CobolToken st = new CobolToken(1, 70, "'A'");

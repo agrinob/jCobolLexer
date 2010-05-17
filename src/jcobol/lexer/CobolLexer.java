@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.Reader;
 import jcobol.reader.CardReader;
 import jcobol.reader.CobolLine;
-import jcobol.reader.CobolLineFixed;
 import org.apache.log4j.Logger;
 
 /**
@@ -49,7 +48,7 @@ public class CobolLexer {
 
     /**
      * Constructor.
-     * @param readerSource The readerSource program, free or fixed format.
+     * @param source The readerSource program, free or fixed format.
      */
     public CobolLexer(Reader source) {
         assert source != null;
@@ -58,7 +57,10 @@ public class CobolLexer {
 
     /**
      * Get the readerSource program as a list of tokens.
-     * @return A list of lastToken.
+     * @param debug Zero or more (case insensitive) characters. Used to selected
+     * which debug lines from source code to parse. Debug lines not selected are
+     * discarded.
+     * @return A list of tokens.
      * @throws IOException In case of I/O error reading the readerSource program.
      */
     public TokenList getTokens(final char... debug) throws IOException {

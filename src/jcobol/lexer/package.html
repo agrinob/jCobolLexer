@@ -8,7 +8,7 @@
     The Cobol Lexer main classes.
     <p>Provides the API for parsing a Cobol source program and convert it to a
     list of lexical tokens.
-    <h1>Example</h1>
+    <h3>Example</h3>
     <p>You want to convert a cobol source program "test.cbl" and obtains it as
     a list of lexical tokens:
     <pre><code>
@@ -18,7 +18,7 @@
     </code></pre>
     <p>And that's all.
     <h1>What are lexical tokens?</h1>
-    <p>A lexical token is an indivisible element of cobol source program. 
+    <p>A lexical token is an logically indivisible element of cobol source program.
         <code><a href="../../jcobol/lexer/TokenList.html">TokenList</a></code>
         contains one 
         <code><a href="../../jcobol/lexer/CobolToken.html">CobolToken</a></code> for each lexical token.
@@ -31,12 +31,11 @@
     <p>Each lexical token is given a type (see
         <code><a href="../../jcobol/lexer/CobolType.html">CobolType</a></code>
         ).
-    <p>No tokens contains text that spans more than one line. Single logical items,
-        like multi-line strings or pseudo-text, are represented by several
-        tokens.
+    <p>Most tokens contains text that spans more than one line. The exception is strings:
+        all strings, including multiline strings, are represented as one token.
     <p>Parsing only applies to proper cobol code. Compiler options and contents
         of pseudo-code is not parsed, only stored as found.
-    <h1>What results means</h1>
+    <h3>What results means</h3>
     <p>TokenList contains a list of lexical tokens, a combination of the following
         types:
     <table rules="all" border="1" cellpadding="3" width="100%">
@@ -51,12 +50,15 @@
         <tr>
             <th><code>STRING</code></th>
             <th style="font-weight: normal">A string</th>
-            <th style="font-weight: normal">Include the start quotation mark. The end quotation mark may appears or not. </th>
+            <th style="font-weight: normal">Include the start/end quotation mark. For
+            multiline strings, the content is the final value of the string (no
+            further process required).</th>
         </tr>
         <tr>
             <th><code>WORD</code></th>
             <th style="font-weight: normal">A cobol word</th>
-            <th style="font-weight: normal">Variable names, reserved words, numeric values, ...</th>
+            <th style="font-weight: normal">Variable names, reserved words, numeric values, ... (no
+            whitespaces inside)</th>
         </tr>
         <tr>
             <th><code>TEXT</code></th>
@@ -67,7 +69,8 @@
         <tr>
             <th><code>SEPARATOR</code></th>
             <th style="font-weight: normal">A comma, period or semi-colon</th>
-            <th style="font-weight: normal">These caracter when used as separators in code, not as part of a PICTURE specification.</th>
+            <th style="font-weight: normal">These caracter when used as separators in code, not as part of a PICTURE
+                format string.</th>
         </tr>
         <tr>
             <th><code>COLON</code></th>
@@ -78,6 +81,11 @@
             <th><code>LEFT_PAREN, RIGHT_PAREN</code></th>
             <th style="font-weight: normal">"(", ")"</th>
             <th style="font-weight: normal">Left and right parentesis.</th>
+        </tr>
+        <tr>
+            <th><code>AMPERSAND</code></th>
+            <th style="font-weight: normal">"&"</th>
+            <th style="font-weight: normal">The concatenation operator.</th>
         </tr>
         <tr>
             <th><code>START_PSEUDO_TEXT</code></th>
@@ -95,37 +103,30 @@
             <th style="font-weight: normal">Signal the end of pseudo-text</th>
         </tr>
         <tr>
-            <th><code>CONTINUATION</code></th>
-            <th style="font-weight: normal">"-"</th>
-            <th style="font-weight: normal">A continuation mark in col 7. Only appears in fixed format cobol programs.</th>
-        </tr>
-        <tr>
             <th><code>NEW_PAGE</code></th>
             <th style="font-weight: normal">"/"</th>
-            <th style="font-weight: normal">A new page jump. The text comes unparsed in the next token (of type <code>TEXT</code>).</th>
+            <th style="font-weight: normal">A new page jump. The text includes the line's content starting from the initial "/"..</th>
         </tr>
         <tr>
             <th><code>SPECIAL_LINE</code></th>
             <th style="font-weight: normal">"$"</th>
-            <th style="font-weight: normal">A compiler option.  The text comes unparsed in the next token (of type <code>TEXT</code>).</th>
-        </tr>
-        <tr>
-            <th><code>START_DEBUG</code></th>
-            <th style="font-weight: normal">Single letter</th>
-            <th style="font-weight: normal">The next tokens, until <code>END_DEBUG</code> are marked for conditional compilation.
-            The letter is usually "D" or "d", but others alternativas are also accepted.</th>
-        </tr>
-        <tr>
-            <th><code>END_DEBUG</code></th>
-            <th style="font-weight: normal">Empty string</th>
-            <th style="font-weight: normal">Mark the end of the debug line.</th>
-        </tr>
-        <tr>
-            <th><code>AREA_A</code></th>
-            <th style="font-weight: normal">"" (empty string)</th>
-            <th style="font-weight: normal">Next token starts in Area A (cols 8-11). Only appears in fixed format cobol programs.</th>
+            <th style="font-weight: normal">A compiler option. The text includes the line's content starting from the initial "$".</th>
         </tr>
         </tbody>
     </table>
+    <h3>PICTURE string format</h3>
+    <p>A PICTURE string format, like <code>X(9).99</code>, is always expressed as a single WORD token.
+        In any other situation, parentesis and period are expressed as separate tokens.
+    <h3>Continuation lines</h3>
+    <p>Strings divided in two or more physical lines are joined in a single STRING token. You don't need
+        to care about continuation characters in source code.
+    <p>Same processing apply to other items splitted across multiple lines.
+    <h3>Debug lines</h3>
+    <p>Debug lines are parsed only if you expecifically asked for it. You must indicate what debug lines
+        you want to be parsed (see {@link jcobol.lexer.CobolLexer#getTokens(char...) getTokens(final char... debug)}).
+    <h3>Tabs treatement</h3>
+    <p>Tabs are expanded to spaces before parsing.
+    <p>For fixed format, tabs are fixed at 7, 12, 20, 28, 36, 42, 50, 58, 64, 72 columns.
+    <p>For free format, tabs are fixed at 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89 columns.
   </body>
 </html>
